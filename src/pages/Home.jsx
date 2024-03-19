@@ -4,7 +4,7 @@ import {Skeleton} from "../Components/PizzaBlock/Skeleton";
 import PizzaBlock from "../Components/PizzaBlock/PizzaBlock";
 import Categories from "../Components/Categories";
 import qs from 'qs';
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {selectFilter, setCategoryId} from "../redux/slices/filterSlice";
 import Pagination from "../Components/Pagination";
@@ -88,7 +88,7 @@ function Home() {
                         ? [...new Array(6)].map((_, index) => <Skeleton key={index}/>)
                         : items
                             .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase()))
-                            .map((obj) => <PizzaBlock key={obj.id} {...obj}/>)
+                            .map((obj) => <Link key={obj.id} to={`/pizza/${obj.id}`}><PizzaBlock {...obj}/></Link>)
                     }
                 </div>
 

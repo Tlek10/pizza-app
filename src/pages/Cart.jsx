@@ -1,10 +1,8 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
-import cartItem from "../Components/CartItem";
 import CartItem from "../Components/CartItem";
 import {clearItems, removeItem, selectCart} from "../redux/slices/cartSlice";
-import {clear} from "@testing-library/user-event/dist/clear";
 import CartEmpty from "../Components/CartEmpty";
 
 function Cart() {

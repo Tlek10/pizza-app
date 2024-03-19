@@ -1,0 +1,51 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.pizza-details {
+    display: flex;
+    align-items: flex-start;
+}
+
+.pizza-image {
+    width: 250px; /* Увеличиваем размер изображения */
+    height: auto;
+    object-fit: cover;
+    margin-right: 20px;
+    border-radius: 10px;
+}
+
+.pizza-info {
+    flex: 1;
+}
+
+.pizza-title {
+    font-size: 24px;
+    margin: 0;
+}
+
+.pizza-price {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.pizza-description {
+    margin-bottom: 20px;
+}
+
+.add-to-cart-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ff5a5f; /* Оранжевый цвет кнопки */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    float: right; /* Размещаем кнопку справа */
+}
+
+.add-to-cart-button:hover {
+    background-color: #ff3b3f; /* Цвет кнопки при наведении */
+}
