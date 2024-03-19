@@ -1,28 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
-import axios from "axios";
+import React, {useEffect, useState} from 'react';
 import Sort from "../Components/Sort";
-import { Skeleton } from "../Components/PizzaBlock/Skeleton";
+import {Skeleton} from "../Components/PizzaBlock/Skeleton";
 import PizzaBlock from "../Components/PizzaBlock/PizzaBlock";
 import Categories from "../Components/Categories";
 import qs from 'qs';
-import { useNavigate } from "react-router-dom";
-import { SearchContext } from "../App";
-import { useSelector, useDispatch } from "react-redux";
-import { setCategoryId } from "../redux/slices/filterSlice";
+import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {selectFilter, setCategoryId} from "../redux/slices/filterSlice";
 import Pagination from "../Components/Pagination";
-import {fetchPizzas} from "../redux/slices/pizzasSlice";
-import search from "../Components/Search";
+import {fetchPizzas, selectPizzaData} from "../redux/slices/pizzasSlice";
 
 function Home() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {categoryId, sort} = useSelector(state => state.filter);
 
-
-    const {items, status} = useSelector(state => state.pizza);
+    const {categoryId, sort, searchValue} = useSelector(selectFilter);
+    const {items, status} = useSelector(selectPizzaData);
 
     const sortType = sort.sortProperty;
-    const {searchValue} = useContext(SearchContext);
+
     const [currentPage, setCurrentPage] = useState(1);
 
 
@@ -34,6 +30,8 @@ function Home() {
     const getPizzas = async () => {
         const sortBy = sort.sortProperty.replace('-', '');
         const order = sort.sortProperty.includes('-') ? 'asc' : 'desc';
+
+        console.log('Sort by:', sortBy, 'Order:', order, 'Category ID:', categoryId, 'Current Page:', currentPage); // Отладочное сообщение
 
         dispatch(
             fetchPizzas({
@@ -47,6 +45,11 @@ function Home() {
         window.scrollTo(0, 0);
     };
 
+    useEffect(() => {
+        console.log('Fetching pizzas...');
+        getPizzas();
+    }, [categoryId, sortType, currentPage]);
+
 
     useEffect(() => {
         const queryString = qs.stringify({
@@ -56,16 +59,10 @@ function Home() {
         });
         navigate(`?${queryString}`);
 
-        if(!window.location.search){
+        if (!window.location.search) {
             fetchPizzas();
         }
-    }, [categoryId, sortType, currentPage, navigate]);
-
-    useEffect(() => {
-        getPizzas();
-    }, [categoryId, sortType, currentPage]);
-
-
+    }, [categoryId, currentPage, navigate]);
 
 
     return (
@@ -76,17 +73,17 @@ function Home() {
             </div>
             <h2 className="content__title">Все пиццы</h2>
             {
-                status === 'error'? (<div className="content__error-info">
-                    <h2>
-                        Произошла ошибка <span>😕</span>
-                    </h2>
-                    <p>
-                        Не удалось получить пиццы.
-                        <br />
-                        Для того, чтобы заказать пиццу, вернитесь через 15 мин.
-                    </p>
-                </div>
-                ): <div className="content__items">
+                status === 'error' ? (<div className="content__error-info">
+                        <h2>
+                            Произошла ошибка <span>😕</span>
+                        </h2>
+                        <p>
+                            Не удалось получить пиццы.
+                            <br/>
+                            Для того, чтобы заказать пиццу, вернитесь через 15 мин.
+                        </p>
+                    </div>
+                ) : <div className="content__items">
                     {status === 'loading'
                         ? [...new Array(6)].map((_, index) => <Skeleton key={index}/>)
                         : items
