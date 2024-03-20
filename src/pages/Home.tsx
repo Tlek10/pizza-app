@@ -10,7 +10,7 @@ import {selectFilter, setCategoryId} from "../redux/slices/filterSlice";
 import Pagination from "../Components/Pagination";
 import {fetchPizzas, selectPizzaData} from "../redux/slices/pizzasSlice";
 
-function Home() {
+const Home: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -22,8 +22,8 @@ function Home() {
     const [currentPage, setCurrentPage] = useState(1);
 
 
-    const onClickCategory = (id) => {
-        dispatch(setCategoryId(id));
+    const onClickCategory = (idx: number) => {
+        dispatch(setCategoryId(idx));
     };
 
 
@@ -34,6 +34,7 @@ function Home() {
         console.log('Sort by:', sortBy, 'Order:', order, 'Category ID:', categoryId, 'Current Page:', currentPage); // Отладочное сообщение
 
         dispatch(
+            //@ts-ignore
             fetchPizzas({
                 sortBy,
                 order,
@@ -87,13 +88,12 @@ function Home() {
                     {status === 'loading'
                         ? [...new Array(6)].map((_, index) => <Skeleton key={index}/>)
                         : items
-                            .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase()))
-                            .map((obj) => <Link key={obj.id} to={`/pizza/${obj.id}`}><PizzaBlock {...obj}/></Link>)
+                            .filter((obj: any) => obj.title.toLowerCase().includes(searchValue.toLowerCase()))
+                            .map((obj: any) => <Link key={obj.id} to={`/pizza/${obj.id}`}><PizzaBlock {...obj}/></Link>)
                     }
                 </div>
-
             }
-            <Pagination onChangePage={(number) => setCurrentPage(number)}/>
+            <Pagination onChangePage={(page: number) => setCurrentPage(page)}/>
         </div>
     );
 }
