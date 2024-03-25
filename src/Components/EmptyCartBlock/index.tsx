@@ -1,4 +1,3 @@
-// EmptyCartBlock.js
 import React from 'react';
 import styles from './EmptyCartBlock.modules.scss';
 

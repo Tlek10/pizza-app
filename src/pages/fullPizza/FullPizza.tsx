@@ -1,29 +1,38 @@
+// FullPizza.tsx
 import React, {useEffect, useState} from 'react';
-import {useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
+import { useSelector } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import styles from './FullPizza.module.scss';
+import {selectPizzaData} from "../../redux/pizza/selectors";
 
 const FullPizza: React.FC = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const pizzaData = useSelector(selectPizzaData);
     const [pizza, setPizza] = useState<{
         imageUrl: string;
         title: string;
         price: number;
-    }>();
-    const {id} = useParams();
-    const navigate = useNavigate();
+    } | null>(null);
 
     useEffect(() => {
         async function fetchPizza() {
             try {
-                const {data} = await axios.get(`https://65d1eb44987977636bfbaad2.mockapi.io/items/${id}`);
+                const { data } = await axios.get(`https://65d1eb44987977636bfbaad2.mockapi.io/items/${id}`);
                 setPizza(data);
             } catch (error) {
                 navigate('/');
             }
         }
 
-        fetchPizza();
-    }, [id]);
+        if (!pizzaData.items.length) {
+            fetchPizza();
+        } else {
+            const selectedPizza = pizzaData.items.find(item => item.id === id);
+            setPizza(selectedPizza || null);
+        }
+    }, [id, navigate, pizzaData]);
 
     if (!pizza) {
         return <div className={styles.container}>LOADING...</div>;
@@ -32,7 +41,7 @@ const FullPizza: React.FC = () => {
     return (
         <div className={styles.container}>
             <div className={styles["pizza-details"]}>
-                <img src={pizza.imageUrl} alt={pizza.title} className={styles["pizza-image"]}/>
+                <img src={pizza.imageUrl} alt={pizza.title} className={styles["pizza-image"]} />
                 <div className={styles["pizza-info"]}>
                     <h2 className={styles["pizza-title"]}>{pizza.title}</h2>
                     <p className={styles["pizza-price"]}>${pizza.price}</p>

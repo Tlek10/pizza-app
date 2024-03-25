@@ -6,13 +6,18 @@ import Categories from "../Components/Categories";
 import qs from 'qs';
 import {Link, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {selectFilter, setCategoryId} from "../redux/slices/filterSlice";
 import Pagination from "../Components/Pagination";
-import {fetchPizzas, selectPizzaData} from "../redux/slices/pizzasSlice";
+import {useAppDispatch} from "../redux/store";
+import {selectFilter} from "../redux/filter/selectors";
+import {selectPizzaData} from "../redux/pizza/selectors";
+import {setCategoryId} from "../redux/filter/slice";
+import {fetchPizzas} from "../redux/pizza/asyncActions";
 
 const Home: React.FC = () => {
+
+
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const {categoryId, sort, searchValue} = useSelector(selectFilter);
     const {items, status} = useSelector(selectPizzaData);
@@ -22,9 +27,9 @@ const Home: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
 
-    const onClickCategory = (idx: number) => {
+    const onClickCategory = React.useCallback((idx: number) => {
         dispatch(setCategoryId(idx));
-    };
+    },[]);
 
 
     const getPizzas = async () => {
@@ -34,12 +39,11 @@ const Home: React.FC = () => {
         console.log('Sort by:', sortBy, 'Order:', order, 'Category ID:', categoryId, 'Current Page:', currentPage); // Отладочное сообщение
 
         dispatch(
-            //@ts-ignore
             fetchPizzas({
                 sortBy,
                 order,
-                currentPage,
-                categoryId,
+                currentPage: String(currentPage),
+                categoryId: String(categoryId),
                 search: searchValue,
             }),
         );
@@ -61,7 +65,7 @@ const Home: React.FC = () => {
         navigate(`?${queryString}`);
 
         if (!window.location.search) {
-            fetchPizzas();
+           dispatch( fetchPizzas({}));
         }
     }, [categoryId, currentPage, navigate]);
 
@@ -89,7 +93,7 @@ const Home: React.FC = () => {
                         ? [...new Array(6)].map((_, index) => <Skeleton key={index}/>)
                         : items
                             .filter((obj: any) => obj.title.toLowerCase().includes(searchValue.toLowerCase()))
-                            .map((obj: any) => <Link key={obj.id} to={`/pizza/${obj.id}`}><PizzaBlock {...obj}/></Link>)
+                            .map((obj: any) =>  <PizzaBlock key={obj.id} {...obj}/>)
                     }
                 </div>
             }
