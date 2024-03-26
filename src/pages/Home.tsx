@@ -5,21 +5,21 @@ import PizzaBlock from "../Components/PizzaBlock/PizzaBlock";
 import Categories from "../Components/Categories";
 import qs from 'qs';
 import {Link, useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
 import Pagination from "../Components/Pagination";
 import {useAppDispatch} from "../redux/store";
 import {selectFilter} from "../redux/filter/selectors";
 import {selectPizzaData} from "../redux/pizza/selectors";
 import {setCategoryId} from "../redux/filter/slice";
 import {fetchPizzas} from "../redux/pizza/asyncActions";
+import {useSelector} from "react-redux";
 
 const Home: React.FC = () => {
 
 
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-
     const {categoryId, sort, searchValue} = useSelector(selectFilter);
+
     const {items, status} = useSelector(selectPizzaData);
 
     const sortType = sort.sortProperty;

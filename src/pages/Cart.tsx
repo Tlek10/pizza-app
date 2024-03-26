@@ -9,8 +9,10 @@ import {clearItems} from "../redux/cart/slice";
 const Cart:React.FC = () => {
 
     const dispatch = useDispatch();
-    const {totalPrice,items} = useSelector(selectCart);
+    const {items} = useSelector(selectCart);
     const totalCount = items.reduce((sum: number, item: any) =>sum + item.count,0);
+    const totalAmount = items.reduce((sum: number, item: any) => sum + (item.count * item.price), 0);
+    const totalPrice = totalAmount;
 
     const onClickClear = () =>{
         dispatch(clearItems());
